@@ -18,10 +18,17 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             $message = __('messages.login.successfully');
+
             $statusCode = Response::HTTP_OK;
-            $token = $request->user()->createToken($request->token_name);
+
+            $token = $request->user()
+                ->createToken(
+                    $request->input('token_name', 'token')
+                )
+                ->plainTextToken;
+                
         } else {
             $message = __('messages.login.error');
             $token = null;
@@ -30,15 +37,26 @@ class AuthController extends Controller
 
         return response()->json(
             [
-                'bearer_token' => $token,
+                'token' => $token,
                 'message' => $message,
             ],
             $statusCode
         );
     }
 
+    /**
+     * Logout user and delete all tokens
+     *
+     * @param Request $request
+     * @return void
+     */
     public function logout(Request $request)
     {
-        // $user->tokens()->delete();
+        $request->user()->tokens()->delete();
+
+        return response()->json(
+            ['message' => 'خروج از حساب کاربری با موفقیت انجام شد!'],
+            200
+        );
     }
 }
