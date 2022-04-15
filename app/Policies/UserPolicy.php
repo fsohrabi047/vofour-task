@@ -13,7 +13,6 @@ class UserPolicy
      * Perform pre-authorization checks.
      *
      * @param \App\Models\User $user 
-     * 
      * @param string $ability 
      * 
      * @return void|bool
