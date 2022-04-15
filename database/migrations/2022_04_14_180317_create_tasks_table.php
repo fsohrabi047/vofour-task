@@ -18,7 +18,7 @@ return new class extends Migration
             // $table->foreignId('user_id');
             $table->string('title');
             $table->mediumText('description');
-            $table->date('due_date');
+            $table->timestamp('due_date');
             $table->enum('status', ['done', 'in_progress', 'todo'])->default('todo');
             $table->timestamps();
 

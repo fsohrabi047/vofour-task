@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -21,8 +23,9 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => bcrypt('10203040'), // password
             'remember_token' => Str::random(10),
+            'role' => 'subscriber'
         ];
     }
 
@@ -36,6 +39,21 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'email_verified_at' => null,
+            ];
+        });
+    }
+
+    /**
+     * Assign user role
+     *
+     * @param  string $roleName
+     * @return static
+     */
+    public function assignRole($roleName)
+    {
+        return $this->state(function (array $attributes) use ($roleName) {
+            return [
+                'role' => $roleName
             ];
         });
     }
