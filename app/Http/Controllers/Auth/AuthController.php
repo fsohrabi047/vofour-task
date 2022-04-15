@@ -12,13 +12,12 @@ class AuthController extends Controller
 {
     /**
      * Handle login request
-     * 
-     * @param LoginRequest $request
+     *
+     * @param  LoginRequest $request
+     * @return Illuminate\http\Response
      */
     public function login(LoginRequest $request)
     {
-        $token = null;
-
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $message = __('messages.login.successfully');
             $statusCode = Response::HTTP_OK;
