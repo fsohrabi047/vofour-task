@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
     /**
-     * Login a user
+     * Handle login request
      * 
-     * @param Request $request
+     * @param LoginRequest $request
      */
     public function login(LoginRequest $request)
     {
