@@ -22,7 +22,6 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $message = __('messages.login.successfully');
             $statusCode = Response::HTTP_OK;
-
             $token = $request->user()->createToken($request->token_name);
         } else {
             $message = __('messages.login.error');
