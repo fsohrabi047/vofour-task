@@ -41,4 +41,39 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Get all user tasks
+     *
+     * @return void
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Scope a query to only include users of a given type.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query 
+     * @param string $roleName 
+     * 
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOfRole($query, $roleName)
+    {
+        return $query->where('role', $roleName);
+    }
 }
