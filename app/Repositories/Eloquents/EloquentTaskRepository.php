@@ -24,14 +24,40 @@ class EloquentTaskRepository implements TaskRepositoryInterface
      */
     public function index(Request $request): Collection
     {
-        return Task::with('user')->get();
+        return Task::with('user')
+            ->when(
+                $request->input('title'),
+                function ($query) use ($request) {
+                    $query->where('title', 'like', "%{$request->input('title')}%");
+                }
+            )
+            ->when(
+                $request->input('description'),
+                function ($query) use ($request) {
+                    $query->where(
+                        'description',
+                        'like',
+                        "%{$request->input('description')}%"
+                    );
+                }
+            )
+            ->when(
+                $request->input('due_date'),
+                function ($query) use ($request) {
+                    $query->whereRaw(
+                        "YEAR('due_date')",
+                        date('Y-m-d', $request->input('due_date'))
+                    );
+                }
+            )
+            ->get();
     }
 
     /**
      * Find a task resource by id
      *
      * @param int   $id 
-     * @param array $with To load user relationships
+     * @param array $with To load task relationships
      * 
      * @return Task 
      */
