@@ -10,6 +10,7 @@ use App\Http\Resources\Task\TaskResource;
 use App\Models\Task;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -39,7 +40,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        return new TaskCollection($this->taskRepo->index($request));
+        return new TaskCollection($this->taskRepo->getUserTasks($request));
     }
 
     /**
@@ -52,7 +53,7 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         list($task, $message, $statusCode ) = $this->taskRepo->store($request);
-
+        
         return ( new TaskResource($task) )
             ->additional(
                 [
@@ -72,7 +73,11 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        return new TaskResource($this->taskRepo->findById($id, ['user']));
+        $task = $this->taskRepo->findById($id, ['user']);
+
+        $this->authorize('view', $task);
+
+        return new TaskResource($task);
     }
 
     /**
@@ -85,12 +90,14 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
+        $this->authorize('update', $task);
+
         list(
             $task,
             $message,
             $statusCode
         ) = $this->taskRepo->update($task, $request);
-
+        
         return ( new TaskResource($task) )
             ->additional(
                 [
@@ -110,6 +117,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $this->authorize('delete', $task);
+
         list($message, $statusCode) = $this->taskRepo->destroy($task);
         
         return response()

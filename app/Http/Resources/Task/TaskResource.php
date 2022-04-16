@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Task;
 
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TaskResource extends JsonResource
@@ -14,6 +15,20 @@ class TaskResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $data = [];
+
+        if (!is_null($this->resource)) {
+            $data = [
+                'id' => $this->id,
+                'title' => $this->title,
+                'description' => $this->description,
+                'status' => $this->status,
+                'due_date' => $this->due_date,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+                'user' => new UserResource($this->whenLoaded('user'))
+            ];
+        }
+        return $data;
     }
 }

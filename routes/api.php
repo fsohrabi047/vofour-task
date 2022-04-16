@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Frontend\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 /*
@@ -25,7 +26,7 @@ Route::prefix('admin')
     ->group(
         function () {
             
-            Route::resource('users', UserController::class);
+            Route::resource('users', UserController::class)->except(['create', 'edit']);
         }
     );
 
@@ -33,6 +34,6 @@ Route::middleware('auth:sanctum')
     ->name('tasks.')
     ->group(
         function () {
-            // Route::resource('tasks',)
+            Route::resource('tasks', TaskController::class)->except(['create', 'edit']);
         }
     );

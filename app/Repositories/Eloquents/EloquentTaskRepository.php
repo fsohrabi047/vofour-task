@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Frontend\StoreTaskRequest;
 use App\Http\Requests\Frontend\UpdateTaskRequest;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
+use Illuminate\Support\Carbon;
 
 class EloquentTaskRepository implements TaskRepositoryInterface
 {
@@ -24,7 +25,7 @@ class EloquentTaskRepository implements TaskRepositoryInterface
      */
     public function index(Request $request): Collection
     {
-        return Task::with('user')
+        return Task::withTrash()->with('user')
             ->when(
                 $request->input('title'),
                 function ($query) use ($request) {
@@ -50,7 +51,7 @@ class EloquentTaskRepository implements TaskRepositoryInterface
                     );
                 }
             )
-            ->get();
+            ->paginate($request->input('per_page'));
     }
 
     /**
@@ -84,7 +85,7 @@ class EloquentTaskRepository implements TaskRepositoryInterface
         return DB::transaction(
             function () use ($request) {
                 try {
-                    $user = Task::create([
+                    $task = Task::create([
                         'title' => $request->input('title'),
                         'description' => $request->input('description'),
                         'due_date' => $request->input('due_date'),
@@ -97,11 +98,11 @@ class EloquentTaskRepository implements TaskRepositoryInterface
                 } catch(\Throwable $th) {
                     $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
                     $message = __('messages.tasks.store.failed');
-                    $user = null;
+                    $task = null;
                     Log::error("Store task error: {$th->getMessage()}");
                 }
-
-                return [$user, $message, $statusCode];
+                
+                return [$task, $message, $statusCode];
             }
         );
     }
@@ -119,7 +120,7 @@ class EloquentTaskRepository implements TaskRepositoryInterface
         return DB::transaction(
             function () use ($request, $task) {
                 try {
-                    $task = $task->update([
+                    $task->update([
                         'title' => $request->input('title'),
                         'description' => $request->input('description'),
                         'due_date' => $request->input('due_date'),
@@ -151,14 +152,58 @@ class EloquentTaskRepository implements TaskRepositoryInterface
     {
         try {
             $task->delete();
-            $message = __('message.task.destroy.success');
+            $message = __('messages.tasks.destroy.success');
             $statusCode = Response::HTTP_OK;
         } catch (\Throwable $th) {
-            $message = __('message.task.destroy.failed');
+            $message = __('messages.tasks.destroy.failed');
             $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             Log::error("Delete task error: {$th->getMessage()}");
         }
 
         return [$message, $statusCode];
+    }
+
+    /**
+     * Get all authenticated user tasks
+     *
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUserTasks(Request $request)
+    {
+        return Task::where('user_id', Auth::id())
+            ->when(
+                $request->filled('s'),
+                function ($query) use ($request) {
+                    $query->where(
+                        function ($q) use ($request) {
+                            $q->where('title', 'like', "%{$request->input('s')}%")
+                                ->orWhere('description', 'like', "%{$request->input('s')}%");
+                        }
+                    );
+                }
+            )
+            ->when(
+                $request->filled('from_due_date') || $request->input('to_due_date'),
+                function ($query) use ($request) {
+                    $from = $request->input('from_due_date')
+                        ? date($request->input('from_due_date'))
+                        : now()->subMonth(1)->format('Y-m-d');
+
+                    $to = $request->input('to_due_date')
+                        ? date($request->input('to_due_date')) 
+                        : now()->addMonth(1)->format('Y-m-d');
+                        
+                    $query->whereBetween('due_date', [$from, $to]);
+                }
+            )
+            ->when(
+                $request->input('status'),
+                function ($query) use ($request) {
+                    $query->ofStatus($request->input('status'));
+                }
+            )
+            ->paginate($request->input('per_page'));
     }
 }

@@ -26,7 +26,7 @@ class StoreTaskRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'min:3'],
             'description' => ['required', 'string', 'min:3'],
-            'due_date' => ['required', 'date'],
+            'due_date' => ['required', 'date_format:Y-m-d H:i:s'],
             'user_id' => ['nullable', 'exists:users,id'], // If admin register a task for a user
             'status' => ['required', 'in:todo,in_progress,done'],
         ];

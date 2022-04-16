@@ -10,6 +10,13 @@ class Task extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['title', 'description', 'due_date', 'status', 'user_id'];
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -24,5 +31,15 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo(User::class)->withDefault();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+    public function scopeOfStatus($query, $status)
+    {
+        return $query->where('status', $status);
     }
 }

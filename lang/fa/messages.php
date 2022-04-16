@@ -7,7 +7,7 @@ return [
     ],
     'have_not_permission' => 'شما درسترسی لازم را ندارید!',
     'users' => [
-        'create' => [
+        'store' => [
             'success' => 'ثبت کاربر با موفقیت انجام شد.',
             'failed' => 'خطا در ثبت کاربر!'
         ],
@@ -21,7 +21,7 @@ return [
         ]
     ],
     'tasks' => [
-        'create' => [
+        'store' => [
             'success' => 'ثبت تسک با موفقیت انجام شد.',
             'failed' => 'خطا در ثبت تسک!'
         ],

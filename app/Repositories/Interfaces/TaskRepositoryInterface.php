@@ -16,7 +16,7 @@ interface TaskRepositoryInterface
      *
      * @param \Illuminate\Http\Request $request 
      * 
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function index(Request $request) : Collection;
 
@@ -57,4 +57,13 @@ interface TaskRepositoryInterface
      * @return array Return array must be [$message, $statusCode] 
      */
     public function destroy(Task $task);
+
+    /**
+     * Get authenticated user tasks
+     *
+     * @param \Illuminate\Http\Request $request 
+     * 
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUserTasks(Request $request);
 }

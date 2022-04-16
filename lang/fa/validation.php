@@ -126,6 +126,8 @@ return array(
         "date" => "تاریخ",
         "time" => "زمان",
         "available" => "موجود",
-        "size" => "اندازه"
+        "size" => "اندازه",
+        'status' => "وضعیت",
+        'due_date' => 'زمان اجرا'
     ),
 );
