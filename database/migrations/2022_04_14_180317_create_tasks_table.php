@@ -20,7 +20,7 @@ return new class extends Migration
             $table->mediumText('description');
             $table->timestamp('due_date');
             $table->enum('status', ['done', 'in_progress', 'todo'])->default('todo');
-            $table->dropSoftDeletes();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreignId('user_id')
