@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Interfaces;
 
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
@@ -14,9 +14,9 @@ interface UserRepositoryInterface
     /**
      * Get all users
      *
-     * @param Request $request 
+     * @param \Illuminate\Http\Request $request 
      * 
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function index(Request $request) : Collection;
 
@@ -26,14 +26,14 @@ interface UserRepositoryInterface
      * @param int   $id 
      * @param array $with Relationship to be eager load
      * 
-     * @return App\Models\User
+     * @return \App\Models\User
      */
     public function findById($id, array $with = null) : User;
 
     /**
      * Store newly user resource
      *
-     * @param StoreUserRequest $request 
+     * @param \App\Http\Requests\Admin\StoreUserRequest $request 
      * 
      * @return array Returned array must be [$user, $message, $statusCode] 
      */
@@ -42,8 +42,8 @@ interface UserRepositoryInterface
     /**
      * Find a user resource by id and update it's properties
      *
-     * @param User    $user 
-     * @param Request $request 
+     * @param \App\Models\User $user 
+     * @param \App\Http\Requests\Admin\UpdateUserRequest $request 
      * 
      * @return array Returned array must be [$user, $message, $statusCode] 
      */
@@ -52,7 +52,7 @@ interface UserRepositoryInterface
     /**
      * Remove a user resource from storage.
      *
-     * @param User $user 
+     * @param \App\Models\User $user 
      *  
      * @return array Return array must be [$message, $statusCode] 
      */

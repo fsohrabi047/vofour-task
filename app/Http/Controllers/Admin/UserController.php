@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
-use App\Http\Resources\UserCollection;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
-use App\Repositories\UserRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -23,13 +23,13 @@ class UserController extends Controller
     /**
      * Instantiate user controller
      *
-     * @param UserRepositoryInterface $userRepositoryInterface 
+     * @param \App\Repositories\Interfaces\UserRepositoryInterface $userRepositoryInterface 
      */
     public function __construct(UserRepositoryInterface $userRepositoryInterface)
     {
         $this->userRepo = $userRepositoryInterface;
     }
-
+    
     /**
      * Display a listing of the resource.
      *

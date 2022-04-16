@@ -1,24 +1,26 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Eloquents;
 
-use App\Http\Requests\Admin\StoreUserRequest;
-use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class EloquentUserRepository implements UserRepositoryInterface
 {
     /**
      * Get a filtered listing of the users resource.
      *
-     * @param Request $request 
+     * @param \Illuminate\Http\Request $request 
      * 
-     * @return Collection
+     * @return \Illuminate\Support\Collection
      */
     public function index(Request $request): Collection
     {
@@ -45,12 +47,12 @@ class EloquentUserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Undocumented function
+     * Find a user resource by id
      *
      * @param int   $id 
      * @param array $with To load user relationships
      * 
-     * @return User 
+     * @return \App\Models\User 
      */
     public function findById($id, array $with = null): User
     {
@@ -66,7 +68,7 @@ class EloquentUserRepository implements UserRepositoryInterface
     /**
      * Store a new user resource
      *
-     * @param StoreUserRequest $request 
+     * @param \App\Http\Requests\Admin\StoreUserRequest $request 
      * 
      * @return array Returned array must be [$user, $message, $statusCode]
      */
@@ -83,11 +85,11 @@ class EloquentUserRepository implements UserRepositoryInterface
                     ]);
 
                     $statusCode = Response::HTTP_CREATED;
-                    $message = __('messages.users.create.success');
-                } catch (\Throwable $th) {
-                    $user = null;
-                    $message = __('messages.users.create.failed');
+                    $message = __('messages.users.store.success');
+                } catch(\Throwable $th) {
                     $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                    $message = __('messages.users.store.failed');
+                    $user = null;
                     Log::error("Store user error: {$th->getMessage()}");
                 }
 
@@ -99,8 +101,8 @@ class EloquentUserRepository implements UserRepositoryInterface
     /**
      * Update a user resource data
      *
-     * @param User $user
-     * @param UpdateUserRequest $request 
+     * @param \App\Models\User $user
+     * @param App\Http\Requests\Admin\UpdateUserRequest $request 
      * 
      * @return array Returned array must be [$user, $message, $statusCode]
      */
@@ -137,7 +139,7 @@ class EloquentUserRepository implements UserRepositoryInterface
     /**
      * Remove a user resource
      *
-     * @param User $user 
+     * @param \App\Models\User $user 
      * 
      * @return array Return array must be [$message, $statusCode] 
      */
