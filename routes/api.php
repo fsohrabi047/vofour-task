@@ -20,7 +20,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::prefix('admin')
-    ->middleware(['role:admind', 'auth:sanctum'])
+    ->middleware(['role:admin', 'auth:sanctum'])
     ->name('admin.')
     ->group(
         function () {

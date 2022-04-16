@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -39,25 +43,24 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request 
      * 
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        list($user, $message, $statusCode ) = $this->userRepo->store($request);
+
+        return ( new UserResource($user) )
+            ->additional(
+                [
+                    'message' => $message
+                ]
+            )
+            ->response()
+            ->setStatusCode($statusCode);
     }
 
     /**
@@ -69,41 +72,52 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id 
-     * 
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return new UserResource($this->userRepo->findById($id, ['tasks']));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request 
+     * @param User $user 
+     * 
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        list(
+            $user,
+            $message,
+            $statusCode
+        ) = $this->userRepo->update($user, $request);
+
+        return ( new UserResource($user) )
+            ->additional(
+                [
+                    'message' => $message
+                ]
+            )
+            ->response()
+            ->setStatusCode($statusCode);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param User $user 
+     * 
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        list($message, $statusCode) = $this->userRepo->destroy($user);
+        
+        return response()
+            ->json(
+                [
+                    'message' => $message
+                ],
+                $statusCode
+            );
     }
 }
