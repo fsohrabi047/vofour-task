@@ -28,3 +28,11 @@ Route::prefix('admin')
             Route::resource('users', UserController::class);
         }
     );
+
+Route::middleware('auth:sanctum')
+    ->name('tasks.')
+    ->group(
+        function () {
+            // Route::resource('tasks',)
+        }
+    );
