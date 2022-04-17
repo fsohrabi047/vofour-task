@@ -17,6 +17,20 @@ class StoreUserRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    public function prepareForValidation()
+    {
+        if ($this->routeIs('register')) {
+            $this->merge([
+                'role' => 'subscriber'
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
@@ -26,7 +40,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'min:2'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:6'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
             'role' => ['required', 'in:admin,subscriber']
         ];
     }

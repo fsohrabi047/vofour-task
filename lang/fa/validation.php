@@ -128,6 +128,7 @@ return array(
         "available" => "موجود",
         "size" => "اندازه",
         'status' => "وضعیت",
-        'due_date' => 'زمان اجرا'
+        'due_date' => 'زمان اجرا',
+        'role' => 'نقش'
     ),
 );
