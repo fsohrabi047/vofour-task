@@ -121,7 +121,7 @@ class EloquentUserRepository implements UserRepositoryInterface
                         $userData['password'] = bcrypt($request->input('password'));
                     }
         
-                    $user = $user->update($userData);
+                    $user->update($userData);
                     $message = __('messages.users.update.success');
                     $statusCode = Response::HTTP_ACCEPTED;
                 } catch (\Throwable $th) {
