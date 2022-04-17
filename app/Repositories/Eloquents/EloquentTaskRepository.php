@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Frontend\StoreTaskRequest;
 use App\Http\Requests\Frontend\UpdateTaskRequest;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Carbon;
 
 class EloquentTaskRepository implements TaskRepositoryInterface
@@ -23,9 +24,9 @@ class EloquentTaskRepository implements TaskRepositoryInterface
      * 
      * @return \Illuminate\Support\Collection
      */
-    public function index(Request $request): Collection
+    public function index(Request $request)
     {
-        return Task::withTrash()->with('user')
+        return Task::with('user')
             ->when(
                 $request->input('title'),
                 function ($query) use ($request) {
@@ -43,12 +44,33 @@ class EloquentTaskRepository implements TaskRepositoryInterface
                 }
             )
             ->when(
-                $request->input('due_date'),
+                $request->filled('from_due_date') || $request->input('to_due_date'),
                 function ($query) use ($request) {
-                    $query->whereRaw(
-                        "YEAR('due_date')",
-                        date('Y-m-d', $request->input('due_date'))
-                    );
+                    $from = $request->input('from_due_date')
+                        ? date($request->input('from_due_date'))
+                        : now()->subMonth(1)->format('Y-m-d');
+
+                    $to = $request->input('to_due_date')
+                        ? date($request->input('to_due_date')) 
+                        : now()->addMonth(1)->format('Y-m-d');
+                    
+                    if ($from == $to) {
+                        return $query->whereDate('due_date', $from);
+                    }
+
+                    return $query->whereBetween('due_date', [$from, $to]);
+                }
+            )
+            ->when(
+                $request->input('status'),
+                function ($query) use ($request) {
+                    $query->ofStatus($request->input('status'));
+                }
+            )
+            ->when(
+                $request->input('is_trashed') === 'true',
+                function ($query) {
+                    $query->withTrashed();
                 }
             )
             ->paginate($request->input('per_page'));
@@ -194,8 +216,12 @@ class EloquentTaskRepository implements TaskRepositoryInterface
                     $to = $request->input('to_due_date')
                         ? date($request->input('to_due_date')) 
                         : now()->addMonth(1)->format('Y-m-d');
-                        
-                    $query->whereBetween('due_date', [$from, $to]);
+                    
+                    if ($from == $to) {
+                        return $query->whereDate('due_date', $from);
+                    }
+
+                    return $query->whereBetween('due_date', [$from, $to]);
                 }
             )
             ->when(

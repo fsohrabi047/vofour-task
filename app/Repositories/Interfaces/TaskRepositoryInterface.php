@@ -6,6 +6,7 @@ namespace App\Repositories\Interfaces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Models\Task;
+use Illuminate\Pagination\Paginator;
 
 interface TaskRepositoryInterface
 {
@@ -16,7 +17,7 @@ interface TaskRepositoryInterface
      * 
      * @return \Illuminate\Support\Collection
      */
-    public function index(Request $request) : Collection;
+    public function index(Request $request);
 
     /**
      * Find task resource by id

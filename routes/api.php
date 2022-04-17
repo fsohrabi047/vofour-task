@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TaskController as AdminTaskController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Frontend\TaskController;
@@ -25,15 +26,18 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(
         function () {
-            
-            Route::resource('users', UserController::class)->except(['create', 'edit']);
+            Route::resource('tasks', AdminTaskController::class)
+                ->except(['create', 'edit']);
+            Route::resource('users', UserController::class)
+                ->except(['create', 'edit']);
         }
     );
 
-Route::middleware('auth:sanctum')
+Route::middleware('auth:sanctum', 'role:subscriber')
     ->name('tasks.')
     ->group(
         function () {
-            Route::resource('tasks', TaskController::class)->except(['create', 'edit']);
+            Route::resource('tasks', TaskController::class)
+                ->except(['create', 'edit']);
         }
     );
