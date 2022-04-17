@@ -24,7 +24,7 @@ class EloquentUserRepository implements UserRepositoryInterface
      */
     public function index(Request $request): Collection
     {
-        return User::with('tasks')
+        return User::withCount('tasks')
             ->when(
                 $request->input('name'),
                 function ($query) use ($request) {

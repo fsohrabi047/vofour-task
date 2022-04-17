@@ -66,13 +66,17 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id 
+     * @param \App\Models\User $user 
      * 
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        return new UserResource($this->userRepo->findById($id, ['tasks']));
+        $user->load('tasks');
+
+        $user->loadCount('tasks');
+        
+        return new UserResource($user);
     }
 
     /**

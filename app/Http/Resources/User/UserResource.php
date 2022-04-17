@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Task\TaskCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -19,7 +20,12 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'role' => $this->role
+            'role' => $this->role,
+            $this->mergeWhen(
+                isset($this->tasks_count),
+                ['tasks_count' => $this->tasks_count ?? 0]
+            ),
+            'tasks' => new TaskCollection($this->whenLoaded('tasks'))
         ];
     }
 
