@@ -76,11 +76,11 @@ class EloquentTaskRepository implements TaskRepositoryInterface
     /**
      * Store a new task resource
      *
-     * @param \App\Http\Requests\Frontend\StoreTaskRequest $request 
+     * @param \Illuminate\Http\Request $request 
      * 
      * @return array Returned array must be [$user, $message, $statusCode]
      */
-    public function store(StoreTaskRequest $request): array
+    public function store(Request $request): array
     {
         return DB::transaction(
             function () use ($request) {
@@ -111,11 +111,11 @@ class EloquentTaskRepository implements TaskRepositoryInterface
      * Update a task resource data
      *
      * @param \App\Model\Task $task
-     * @param \App\Http\Requests\Frontend\UpdateTaskRequest $request 
+     * @param \Illuminate\Http\Request $request 
      * 
      * @return array Returned array must be [$user, $message, $statusCode]
      */
-    public function update(Task $task, UpdateTaskRequest $request): array
+    public function update(Task $task, Request $request): array
     {
         return DB::transaction(
             function () use ($request, $task) {

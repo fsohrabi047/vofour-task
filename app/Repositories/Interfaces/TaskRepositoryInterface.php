@@ -3,8 +3,6 @@
 namespace App\Repositories\Interfaces;
 
 
-use App\Http\Requests\Frontend\StoreTaskRequest;
-use App\Http\Requests\Frontend\UpdateTaskRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Models\Task;
@@ -33,21 +31,21 @@ interface TaskRepositoryInterface
     /**
      * Store newly task resource
      *
-     * @param StoreTaskRequest $request 
+     * @param Illuminate\Http\Request $request 
      * 
      * @return array Returned array must be [$task, $message, $statusCode] 
      */
-    public function store(StoreTaskRequest $request) : array;
+    public function store(Request $request) : array;
 
     /**
      * Find a task resource by id and update it's properties
      *
      * @param \App\Models\Task  $task  
-     * @param UpdateTaskRequest $request 
+     * @param \Illuminate\Http\Request $request 
      * 
      * @return array Returned array must be [$task, $message, $statusCode] 
      */
-    public function update(Task $task, UpdateTaskRequest $request) : array;
+    public function update(Task $task, Request $request) : array;
 
     /**
      * Remove a task resource from storage.
