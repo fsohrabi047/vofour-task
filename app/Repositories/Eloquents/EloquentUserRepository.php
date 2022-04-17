@@ -147,10 +147,10 @@ class EloquentUserRepository implements UserRepositoryInterface
     {
         try {
             $user->delete();
-            $message = __('message.users.destroy.success');
+            $message = __('messages.users.destroy.success');
             $statusCode = Response::HTTP_OK;
         } catch (\Throwable $th) {
-            $message = __('message.users.destroy.failed');
+            $message = __('messages.users.destroy.failed');
             $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             Log::error("Delete user error: {$th->getMessage()}");
         }
