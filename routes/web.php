@@ -36,9 +36,6 @@ Route::prefix('patterns')
         Route::get('observer', function (WeatherData $weatherData) {
             $currentConditionDisplay = new CurrenConditionsDisplay($weatherData);
             
-            $weatherData->setMeasurements(21, 18, 10);
-            $weatherData->setMeasurements(25, 10, 15);
-            
             for ($i = 1; $i < rand(3, 6); $i++) {
                 $weatherData->setMeasurements(rand(18, 28), rand(20, 28), rand(5, 15));
             }
