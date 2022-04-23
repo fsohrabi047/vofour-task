@@ -1,5 +1,9 @@
 <?php
 
+use Design\Observer\Concretes\Observers\CurrenConditionsDisplay;
+use Design\Observer\Concretes\WeatherData;
+use Design\Strategy\Behaviors\Fly\FlyNoWays;
+use Design\Strategy\MallardDuck;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +18,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    dd('/d.;d.;d.d.d');
 });
+Route::prefix('patterns')
+    ->name('patterns.')
+    ->group(function () {
+
+        Route::get('strategy', function (MallardDuck $duck) {
+            $duck->performFly();
+            $duck->performQuack();
+            dump('Set new fly behavior');
+            $duck->setFlyBehaviorAttribute(new FlyNoWays);
+        
+            $duck->performFly();
+        });
+
+        Route::get('observer', function (WeatherData $weatherData) {
+            $currentConditionDisplay = new CurrenConditionsDisplay($weatherData);
+            
+            $weatherData->setMeasurements(21, 18, 10);
+            $weatherData->setMeasurements(25, 10, 15);
+            
+            for ($i = 1; $i < rand(3, 6); $i++) {
+                $weatherData->setMeasurements(rand(18, 28), rand(20, 28), rand(5, 15));
+            }
+        });
+    });
+
