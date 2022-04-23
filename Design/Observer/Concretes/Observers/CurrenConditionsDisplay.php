@@ -28,7 +28,7 @@ class CurrenConditionsDisplay implements ObserverInterface, DisplayElementInterf
 
         $this->humidity = $humidity;
 
-        ;return $this->display();
+        return $this->display();
     }
 
     public function display()
