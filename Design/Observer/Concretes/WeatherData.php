@@ -24,7 +24,7 @@ class WeatherData implements SubjectInterface
         unset($this->observers[$observer]); // Reform this
     }
 
-    public function notifyOservers()
+    public function notifyObservers()
     {
         foreach($this->observers as $observer) {
             $observer->update($this->temp, $this->humidity, $this->pressure);
@@ -33,7 +33,7 @@ class WeatherData implements SubjectInterface
 
     public function measurementsChanged()
     {
-        return $this->notifyOservers();
+        return $this->notifyObservers();
     }
 
     public function setMeasurements(float $temp, float $humidity, float $pressure)
