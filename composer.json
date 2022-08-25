@@ -27,7 +27,8 @@
         },
         "classmap": [
             "Design/Strategy",
-            "Design/Observer"
+            "Design/Observer",
+            "Design/Decorator"
         ]
     },
     "autoload-dev": {

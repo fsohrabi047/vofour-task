@@ -1,5 +1,9 @@
 <?php
 
+use Design\Decorator\Beverages\Espresso;
+use Design\Decorator\Beverages\HouseBlend;
+use Design\Decorator\Condiments\Mocha;
+use Design\Decorator\Condiments\Soy;
 use Design\Observer\Concretes\Observers\CurrenConditionsDisplay;
 use Design\Observer\Concretes\WeatherData;
 use Design\Strategy\Behaviors\Fly\FlyNoWays;
@@ -39,6 +43,19 @@ Route::prefix('patterns')
             for ($i = 1; $i < rand(3, 6); $i++) {
                 $weatherData->setMeasurements(rand(18, 28), rand(20, 28), rand(5, 15));
             }
+        });
+
+        Route::get('decorator', function () {
+            $beverage = new Espresso();
+
+            dump($beverage->getDescription() . ': $' . $beverage->cost());
+
+            $beverage2 = new HouseBlend();
+
+            $beverage2 = new Soy($beverage2);
+            $beverage2 = new Mocha($beverage2);
+
+            dump($beverage2->getDescription() . ': $' . $beverage2->cost());
         });
     });
 
